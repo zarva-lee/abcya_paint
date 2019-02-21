@@ -81,7 +81,7 @@
                 PUBLIC_URL: ".",
                 REACT_APP_ASYNC_OBJECT_RETRIES: "10",
                 REACT_APP_ASYNC_OBJECT_DELAY: "2000",
-                REACT_APP_SKETCH_URL: "%PUBLIC_URL%/sketch/min/sketch-api.min.js",
+                REACT_APP_SKETCH_URL: "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js",
                 REACT_APP_ACTION_LOGGER: "false",
                 REACT_APP_PERF_MIDDLEWARE: "false",
                 REACT_APP_WHY_DID_YOU_UPDATE: "false",
@@ -95,7 +95,7 @@
                 REACT_APP_TUTORIAL_URL: "https://youtu.be/bllO9Kx0MCI",
                 REACT_APP_TUTORIAL_WINDOW_NAME: "ABCya-paint, learn it!",
                 REACT_APP_TUTORIAL_WINDOW_FEATURES: "width=1024,height=768,centerscreen,menubar=off,toolbar=off",
-                REACT_APP_INTRO_MOVIE_URL: "%PUBLIC_URL%/Loading-Logo.mp4",
+                REACT_APP_INTRO_MOVIE_URL: "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4",
                 REACT_APP_EXPANSION_AMOUNT: "20",
                 REACT_APP_EXPANSION_DELAY: "500",
                 REACT_APP_EXPANSION_COUNT: "10"
@@ -1938,7 +1938,7 @@
                 PUBLIC_URL: ".",
                 REACT_APP_ASYNC_OBJECT_RETRIES: "10",
                 REACT_APP_ASYNC_OBJECT_DELAY: "2000",
-                REACT_APP_SKETCH_URL: "%PUBLIC_URL%/sketch/min/sketch-api.min.js",
+                REACT_APP_SKETCH_URL: "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js",
                 REACT_APP_ACTION_LOGGER: "false",
                 REACT_APP_PERF_MIDDLEWARE: "false",
                 REACT_APP_WHY_DID_YOU_UPDATE: "false",
@@ -1952,7 +1952,7 @@
                 REACT_APP_TUTORIAL_URL: "https://youtu.be/bllO9Kx0MCI",
                 REACT_APP_TUTORIAL_WINDOW_NAME: "ABCya-paint, learn it!",
                 REACT_APP_TUTORIAL_WINDOW_FEATURES: "width=1024,height=768,centerscreen,menubar=off,toolbar=off",
-                REACT_APP_INTRO_MOVIE_URL: "%PUBLIC_URL%/Loading-Logo.mp4",
+                REACT_APP_INTRO_MOVIE_URL: "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4",
                 REACT_APP_EXPANSION_AMOUNT: "20",
                 REACT_APP_EXPANSION_DELAY: "500",
                 REACT_APP_EXPANSION_COUNT: "10"
@@ -4032,7 +4032,7 @@
                 PUBLIC_URL: ".",
                 REACT_APP_ASYNC_OBJECT_RETRIES: "10",
                 REACT_APP_ASYNC_OBJECT_DELAY: "2000",
-                REACT_APP_SKETCH_URL: "%PUBLIC_URL%/sketch/min/sketch-api.min.js",
+                REACT_APP_SKETCH_URL: "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js",
                 REACT_APP_ACTION_LOGGER: "false",
                 REACT_APP_PERF_MIDDLEWARE: "false",
                 REACT_APP_WHY_DID_YOU_UPDATE: "false",
@@ -4046,7 +4046,7 @@
                 REACT_APP_TUTORIAL_URL: "https://youtu.be/bllO9Kx0MCI",
                 REACT_APP_TUTORIAL_WINDOW_NAME: "ABCya-paint, learn it!",
                 REACT_APP_TUTORIAL_WINDOW_FEATURES: "width=1024,height=768,centerscreen,menubar=off,toolbar=off",
-                REACT_APP_INTRO_MOVIE_URL: "%PUBLIC_URL%/Loading-Logo.mp4",
+                REACT_APP_INTRO_MOVIE_URL: "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4",
                 REACT_APP_EXPANSION_AMOUNT: "20",
                 REACT_APP_EXPANSION_DELAY: "500",
                 REACT_APP_EXPANSION_COUNT: "10"
@@ -4058,7 +4058,7 @@
                 PUBLIC_URL: ".",
                 REACT_APP_ASYNC_OBJECT_RETRIES: "10",
                 REACT_APP_ASYNC_OBJECT_DELAY: "2000",
-                REACT_APP_SKETCH_URL: "%PUBLIC_URL%/sketch/min/sketch-api.min.js",
+                REACT_APP_SKETCH_URL: "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js",
                 REACT_APP_ACTION_LOGGER: "false",
                 REACT_APP_PERF_MIDDLEWARE: "false",
                 REACT_APP_WHY_DID_YOU_UPDATE: "false",
@@ -4072,7 +4072,7 @@
                 REACT_APP_TUTORIAL_URL: "https://youtu.be/bllO9Kx0MCI",
                 REACT_APP_TUTORIAL_WINDOW_NAME: "ABCya-paint, learn it!",
                 REACT_APP_TUTORIAL_WINDOW_FEATURES: "width=1024,height=768,centerscreen,menubar=off,toolbar=off",
-                REACT_APP_INTRO_MOVIE_URL: "%PUBLIC_URL%/Loading-Logo.mp4",
+                REACT_APP_INTRO_MOVIE_URL: "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4",
                 REACT_APP_EXPANSION_AMOUNT: "20",
                 REACT_APP_EXPANSION_DELAY: "500",
                 REACT_APP_EXPANSION_COUNT: "10"
@@ -10334,8 +10334,8 @@
             key: "getMovieURL",
             value: function() {
                 var A = this.props.transitionToMainScreen
-                  , e = "%PUBLIC_URL%/Loading-Logo.mp4";
-                return e ? e.replace("%PUBLIC_URL%", ".") : (q('Your environment is missing the "REACT_APP_INTRO_MOVIE_URL" key. Please add it and try again.'),
+                  , e = "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4";
+                return e ? e.replace("https://jiaweniv.github.io/abcya_paint", ".") : (q('Your environment is missing the "REACT_APP_INTRO_MOVIE_URL" key. Please add it and try again.'),
                 A(),
                 null)
             }
@@ -10346,7 +10346,7 @@
                   , e = this.props.transitionToMainScreen
                   , t = new XMLHttpRequest;
                 t.open("GET", this.getMovieURL(), !0),
-                t.responseType = "blob",
+                // t.responseType = "blob",
                 t.addEventListener("load", function() {
                     t.status >= 200 && t.status <= 299 ? (q("The intro movie was fetched successfully, and will be played."),
                     A.setState({
@@ -20976,9 +20976,9 @@
         return A.preventDefault()
     }),
     localStorage.debug && document.querySelector(".abcya-paint").setAttribute("mode", "debugging");
-    var I = "%PUBLIC_URL%/sketch/min/sketch-api.min.js";
+    var I = "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js";
     if (I) {
-        I = I.replace("%PUBLIC_URL%", ".");
+        I = I.replace("https://jiaweniv.github.io/abcya_paint", ".");
         var d = document.createElement("script");
         d.setAttribute("src", I),
         d.setAttribute("async", "async"),
@@ -23514,7 +23514,7 @@
             PUBLIC_URL: ".",
             REACT_APP_ASYNC_OBJECT_RETRIES: "10",
             REACT_APP_ASYNC_OBJECT_DELAY: "2000",
-            REACT_APP_SKETCH_URL: "%PUBLIC_URL%/sketch/min/sketch-api.min.js",
+            REACT_APP_SKETCH_URL: "https://jiaweniv.github.io/abcya_paint/sketch/min/sketch-api.min.js",
             REACT_APP_ACTION_LOGGER: "false",
             REACT_APP_PERF_MIDDLEWARE: "false",
             REACT_APP_WHY_DID_YOU_UPDATE: "false",
@@ -23528,7 +23528,7 @@
             REACT_APP_TUTORIAL_URL: "https://youtu.be/bllO9Kx0MCI",
             REACT_APP_TUTORIAL_WINDOW_NAME: "ABCya-paint, learn it!",
             REACT_APP_TUTORIAL_WINDOW_FEATURES: "width=1024,height=768,centerscreen,menubar=off,toolbar=off",
-            REACT_APP_INTRO_MOVIE_URL: "%PUBLIC_URL%/Loading-Logo.mp4",
+            REACT_APP_INTRO_MOVIE_URL: "https://jiaweniv.github.io/abcya_paint/Loading-Logo.mp4",
             REACT_APP_EXPANSION_AMOUNT: "20",
             REACT_APP_EXPANSION_DELAY: "500",
             REACT_APP_EXPANSION_COUNT: "10"
