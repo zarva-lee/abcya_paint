@@ -26,8 +26,7 @@ var Paint = (function () {
     };
 
 
-    var QUALITIES = [
-        {
+    var QUALITIES = [{
             name: '低',
             resolutionScale: 1.0
         },
@@ -101,7 +100,7 @@ var Paint = (function () {
     var HISTORY_SIZE = 4; //number of snapshots we store - this should be number of reversible actions + 1
 
 
-    function pascalRow (n) {
+    function pascalRow(n) {
         var line = [1];
         for (var k = 0; k < n; ++k) {
             line.push(line[k] * (n - k) / (k + 1));
@@ -110,16 +109,16 @@ var Paint = (function () {
     }
 
     //width should be an odd number
-    function makeBlurShader (width) {
+    function makeBlurShader(width) {
         var coefficients = pascalRow(width - 1 + 2);
 
         //take the 1s off the ends
         coefficients.shift();
         coefficients.pop();
-        
+
         var normalizationFactor = 0;
         for (var i = 0; i < coefficients.length; ++i) {
-            normalizationFactor += coefficients[i]; 
+            normalizationFactor += coefficients[i];
         }
 
         var shader = [
@@ -131,10 +130,10 @@ var Paint = (function () {
             'uniform vec2 u_resolution;',
 
             'void main () {',
-                'vec4 total = vec4(0.0);',
+            'vec4 total = vec4(0.0);',
 
-                'vec2 coordinates = gl_FragCoord.xy / u_resolution;',
-                'vec2 delta = u_step / u_resolution;',
+            'vec2 coordinates = gl_FragCoord.xy / u_resolution;',
+            'vec2 delta = u_step / u_resolution;',
         ].join('\n');
 
         shader += '\n';
@@ -151,7 +150,7 @@ var Paint = (function () {
     }
 
 
-    function hsvToRyb (h, s, v) {
+    function hsvToRyb(h, s, v) {
         h = h % 1;
 
         var c = v * s,
@@ -174,7 +173,7 @@ var Paint = (function () {
         return [r, g, b];
     }
 
-    function makeOrthographicMatrix (matrix, left, right, bottom, top, near, far) {
+    function makeOrthographicMatrix(matrix, left, right, bottom, top, near, far) {
         matrix[0] = 2 / (right - left);
         matrix[1] = 0;
         matrix[2] = 0;
@@ -195,12 +194,12 @@ var Paint = (function () {
         return matrix;
     }
 
-    function mix (a, b, t) {
+    function mix(a, b, t) {
         return (1.0 - t) * a + t * b;
     }
 
     //the texture is always updated to be (paintingWidth x paintingHeight) x resolutionScale
-    function Snapshot (texture, paintingWidth, paintingHeight, resolutionScale) {
+    function Snapshot(texture, paintingWidth, paintingHeight, resolutionScale) {
         this.texture = texture;
         this.paintingWidth = paintingWidth;
         this.paintingHeight = paintingHeight;
@@ -216,7 +215,7 @@ var Paint = (function () {
     };
 
 
-    function Paint (canvas, wgl) {
+    function Paint(canvas, wgl) {
         this.canvas = canvas;
         this.wgl = wgl;
 
@@ -275,20 +274,30 @@ var Paint = (function () {
                 shaderSources['shaders/painting.vert'], '#define SAVE \n #define RGB \n ' + shaderSources['shaders/painting.frag']);
 
             this.brushProgram = wgl.createProgram(
-                shaderSources['shaders/brush.vert'], shaderSources['shaders/brush.frag'], { 'a_position': 0 });
+                shaderSources['shaders/brush.vert'], shaderSources['shaders/brush.frag'], {
+                    'a_position': 0
+                });
 
             this.panelProgram = wgl.createProgram(
-                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/panel.frag'], { 'a_position': 0 });
+                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/panel.frag'], {
+                    'a_position': 0
+                });
 
 
             this.blurProgram = wgl.createProgram(
-                shaderSources['shaders/fullscreen.vert'], makeBlurShader(PANEL_BLUR_SAMPLES), { 'a_position': 0 });
+                shaderSources['shaders/fullscreen.vert'], makeBlurShader(PANEL_BLUR_SAMPLES), {
+                    'a_position': 0
+                });
 
             this.outputProgram = wgl.createProgram(
-                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/output.frag'], { 'a_position': 0 });
+                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/output.frag'], {
+                    'a_position': 0
+                });
 
             this.shadowProgram = wgl.createProgram(
-                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/shadow.frag'], { 'a_position': 0 });
+                shaderSources['shaders/fullscreen.vert'], shaderSources['shaders/shadow.frag'], {
+                    'a_position': 0
+                });
 
 
             this.quadVertexBuffer = wgl.createBuffer();
@@ -352,7 +361,7 @@ var Paint = (function () {
 
 
             this.fluiditySlider = new Slider(document.getElementById('fluidity-slider'), this.simulator.fluidity, 0.6, 0.9, (function (fluidity) {
-              this.simulator.fluidity = fluidity;
+                this.simulator.fluidity = fluidity;
             }).bind(this));
 
             this.bristleCountSlider = new Slider(document.getElementById('bristles-slider'), 1, 0, 1, (function (t) {
@@ -362,33 +371,34 @@ var Paint = (function () {
                 this.brush.setBristleCount(bristleCount);
             }).bind(this));
 
-            this.brushSizeSlider = new Slider(document.getElementById('size-slider'), this.brushScale, MIN_BRUSH_SCALE, MAX_BRUSH_SCALE, (function(size) {
+            this.brushSizeSlider = new Slider(document.getElementById('size-slider'), this.brushScale, MIN_BRUSH_SCALE, MAX_BRUSH_SCALE, (function (size) {
                 this.brushScale = size;
             }).bind(this));
 
 
-            
+
             this.qualityButtons = new Buttons(document.getElementById('qualities'),
-                QUALITIES.map(function (q) { return q.name })
-            , INITIAL_QUALITY, (function (index) {
-                this.saveSnapshot();
+                QUALITIES.map(function (q) {
+                    return q.name
+                }), INITIAL_QUALITY, (function (index) {
+                    this.saveSnapshot();
 
-                this.resolutionScale = QUALITIES[index].resolutionScale;
-                this.simulator.changeResolution(this.getPaintingResolutionWidth(), this.getPaintingResolutionHeight());
+                    this.resolutionScale = QUALITIES[index].resolutionScale;
+                    this.simulator.changeResolution(this.getPaintingResolutionWidth(), this.getPaintingResolutionHeight());
 
-                this.needsRedraw = true;
-            }).bind(this)); 
+                    this.needsRedraw = true;
+                }).bind(this));
 
             this.modelButtons = new Buttons(document.getElementById('models'),
-              ['自然', '明亮'], 0, (function (index) {
-                  if (index === 0) {
-                      this.colorModel = ColorModel.RYB;
-                  } else if (index === 1) {
-                      this.colorModel = ColorModel.RGB;
-                  }
+                ['自然', '明亮'], 0, (function (index) {
+                    if (index === 0) {
+                        this.colorModel = ColorModel.RYB;
+                    } else if (index === 1) {
+                        this.colorModel = ColorModel.RGB;
+                    }
 
-                  this.needsRedraw = true;
-              }).bind(this));
+                    this.needsRedraw = true;
+                }).bind(this));
 
 
             this.colorPicker = new ColorPicker(this, 'brushColorHSVA', wgl, canvas, shaderSources, COLOR_PICKER_LEFT, 0);
@@ -404,7 +414,7 @@ var Paint = (function () {
             }).bind(this));
 
 
-            this.clearButton = document.getElementById('clear-button');  
+            this.clearButton = document.getElementById('clear-button');
             this.clearButton.addEventListener('click', this.clear.bind(this));
             this.clearButton.addEventListener('touchstart', (function (event) {
                 event.preventDefault();
@@ -460,7 +470,7 @@ var Paint = (function () {
             this.onResize();
 
             window.addEventListener('resize', this.onResize.bind(this));
-            
+
 
             this.mouseX = 0;
             this.mouseY = 0;
@@ -506,7 +516,7 @@ var Paint = (function () {
             //when we finish resizing, we then resize the simulator to match
             this.newPaintingRectangle = null;
 
-            
+
             this.interactionState = InteractionMode.NONE;
 
 
@@ -531,14 +541,14 @@ var Paint = (function () {
         var wgl = this.wgl;
 
         var shadowDrawState = wgl.createDrawState()
-          .uniform2f('u_bottomLeft', rectangle.left, rectangle.bottom)
-          .uniform2f('u_topRight', rectangle.getRight(), rectangle.getTop())
-          .uniform1f('u_sigma', BOX_SHADOW_SIGMA) 
-          .uniform1f('u_alpha', alpha) 
-          .enable(wgl.BLEND)
-          .blendFunc(wgl.ONE, wgl.ONE_MINUS_SRC_ALPHA)
-          .useProgram(this.shadowProgram)
-          .vertexAttribPointer(this.quadVertexBuffer, 0, 2, wgl.FLOAT, wgl.FALSE, 0, 0);
+            .uniform2f('u_bottomLeft', rectangle.left, rectangle.bottom)
+            .uniform2f('u_topRight', rectangle.getRight(), rectangle.getTop())
+            .uniform1f('u_sigma', BOX_SHADOW_SIGMA)
+            .uniform1f('u_alpha', alpha)
+            .enable(wgl.BLEND)
+            .blendFunc(wgl.ONE, wgl.ONE_MINUS_SRC_ALPHA)
+            .useProgram(this.shadowProgram)
+            .vertexAttribPointer(this.quadVertexBuffer, 0, 2, wgl.FLOAT, wgl.FALSE, 0, 0);
 
         var rectangles = [
             new Rectangle(rectangle.left - BOX_SHADOW_WIDTH, rectangle.bottom - BOX_SHADOW_WIDTH, rectangle.width + 2 * BOX_SHADOW_WIDTH, BOX_SHADOW_WIDTH), //bottom
@@ -560,7 +570,7 @@ var Paint = (function () {
 
     };
 
-    function cursorForResizingSide (side) {
+    function cursorForResizingSide(side) {
         if (side === ResizingSide.LEFT || side === ResizingSide.RIGHT) {
             return 'ew-resize';
         } else if (side === ResizingSide.BOTTOM || side === ResizingSide.TOP) {
@@ -622,7 +632,7 @@ var Paint = (function () {
 
         //the rectangle we end up drawing the painting into
         var clippedPaintingRectangle = (this.interactionState === InteractionMode.RESIZING ? this.newPaintingRectangle : this.paintingRectangle).clone()
-                                           .intersectRectangle(new Rectangle(0, 0, this.canvas.width, this.canvas.height));
+            .intersectRectangle(new Rectangle(0, 0, this.canvas.width, this.canvas.height));
 
         if (this.needsRedraw) {
             //draw painting into texture
@@ -670,10 +680,10 @@ var Paint = (function () {
 
         //output painting to screen
         var outputDrawState = wgl.createDrawState()
-          .viewport(0, 0, this.canvas.width, this.canvas.height)
-          .useProgram(this.outputProgram)
-          .uniformTexture('u_input', 0, wgl.TEXTURE_2D, this.canvasTexture)
-          .vertexAttribPointer(this.quadVertexBuffer, 0, 2, wgl.FLOAT, wgl.FALSE, 0, 0);
+            .viewport(0, 0, this.canvas.width, this.canvas.height)
+            .useProgram(this.outputProgram)
+            .uniformTexture('u_input', 0, wgl.TEXTURE_2D, this.canvasTexture)
+            .vertexAttribPointer(this.quadVertexBuffer, 0, 2, wgl.FLOAT, wgl.FALSE, 0, 0);
 
         wgl.drawArrays(outputDrawState, wgl.TRIANGLE_STRIP, 0, 4);
 
@@ -772,7 +782,7 @@ var Paint = (function () {
             wgl.drawArrays(blurDrawState, wgl.TRIANGLE_STRIP, 0, 4);
         }
 
-        
+
         //draw panel to screen
 
         var panelDrawState = wgl.createDrawState()
@@ -787,7 +797,7 @@ var Paint = (function () {
 
 
         this.drawShadow(PANEL_SHADOW_ALPHA, new Rectangle(0, panelBottom, PANEL_WIDTH, PANEL_HEIGHT)); //shadow for panel
-        
+
 
         this.needsRedraw = false;
 
@@ -911,10 +921,37 @@ var Paint = (function () {
             this.redoButton.className = 'button do-button-inactive';
         }
     };
+    Paint.prototype.DateYMD = function () {
+        // 获取当前日期
+        var date = new Date();
 
+        // 获取当前月份
+        var nowMonth = date.getMonth() + 1;
+
+        // 获取当前是几号
+        var strDate = date.getDate();
+
+        // 添加分隔符“-”
+        var seperator = "-";
+
+        // 对月份进行处理，1-9月在前面添加一个“0”
+        if (nowMonth >= 1 && nowMonth <= 9) {
+            nowMonth = "0" + nowMonth;
+        }
+
+        // 对月份进行处理，1-9号在前面添加一个“0”
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+
+        // 最后拼接字符串，得到一个格式为(yyyy-MM-dd)的日期
+        var nowDate = date.getFullYear() + seperator + nowMonth + seperator + strDate;
+
+        return nowDate;
+    };
     Paint.prototype.save = function () {
         //we first render the painting to a WebGL texture
-
+        alert(12)
         var wgl = this.wgl;
 
         var saveWidth = this.paintingRectangle.width;
@@ -952,7 +989,7 @@ var Paint = (function () {
 
         var savePixels = new Uint8Array(saveWidth * saveHeight * 4);
         wgl.readPixels(wgl.createReadState().bindFramebuffer(saveFramebuffer),
-                        0, 0, saveWidth, saveHeight, wgl.RGBA, wgl.UNSIGNED_BYTE, savePixels);
+            0, 0, saveWidth, saveHeight, wgl.RGBA, wgl.UNSIGNED_BYTE, savePixels);
 
 
         wgl.deleteTexture(saveTexture);
@@ -971,7 +1008,17 @@ var Paint = (function () {
         imageData.data.set(savePixels);
         saveContext.putImageData(imageData, 0, 0);
 
-        window.open(saveCanvas.toDataURL());
+        // window.open(saveCanvas.toDataURL());
+
+        // 创建隐藏的可下载链接
+        var eleLink = document.createElement('a');
+        eleLink.download = 'W_' + this.DateYMD() + '.png';
+        eleLink.href = saveCanvas.toDataURL();
+        eleLink.style.display = 'none';
+        // 触发点击
+        eleLink.click();
+        // 然后移除
+        document.body.removeChild(eleLink);
     };
 
     Paint.prototype.onMouseMove = function (event) {
@@ -1010,11 +1057,11 @@ var Paint = (function () {
                     this.paintingRectangle.getRight() - MIN_PAINTING_WIDTH);
                 this.newPaintingRectangle.width = this.paintingRectangle.left + this.paintingRectangle.width - this.newPaintingRectangle.left;
             }
-            
+
             if (this.resizingSide === ResizingSide.RIGHT || this.resizingSide === ResizingSide.TOP_RIGHT || this.resizingSide === ResizingSide.BOTTOM_RIGHT) {
                 this.newPaintingRectangle.width = Utilities.clamp(mouseX - this.paintingRectangle.left, MIN_PAINTING_WIDTH, this.maxPaintingWidth);
             }
-            
+
             if (this.resizingSide === ResizingSide.BOTTOM || this.resizingSide === ResizingSide.BOTTOM_LEFT || this.resizingSide === ResizingSide.BOTTOM_RIGHT) {
                 this.newPaintingRectangle.bottom = Utilities.clamp(mouseY,
                     this.paintingRectangle.getTop() - this.maxPaintingWidth,
@@ -1022,7 +1069,7 @@ var Paint = (function () {
 
                 this.newPaintingRectangle.height = this.paintingRectangle.bottom + this.paintingRectangle.height - this.newPaintingRectangle.bottom;
             }
-            
+
             if (this.resizingSide === ResizingSide.TOP || this.resizingSide === ResizingSide.TOP_LEFT || this.resizingSide === ResizingSide.TOP_RIGHT) {
                 this.newPaintingRectangle.height = Utilities.clamp(mouseY - this.paintingRectangle.bottom, MIN_PAINTING_WIDTH, this.maxPaintingWidth);
             }
@@ -1066,7 +1113,7 @@ var Paint = (function () {
                 return ResizingSide.RIGHT;
             }
         }
-        
+
         if (mouseX > this.paintingRectangle.left && mouseX <= this.paintingRectangle.getRight()) { //bottom or top
             if (Math.abs(mouseY - this.paintingRectangle.bottom) <= RESIZING_RADIUS) { //bottom
                 return ResizingSide.BOTTOM;
@@ -1079,7 +1126,7 @@ var Paint = (function () {
     };
 
     //what interaction mode would be triggered if we clicked with given mouse position
-    Paint.prototype.desiredInteractionMode = function (mouseX, mouseY) { 
+    Paint.prototype.desiredInteractionMode = function (mouseX, mouseY) {
         var mouseOverPanel = mouseX < PANEL_WIDTH && mouseY > this.canvas.height - PANEL_HEIGHT;
 
         if (mouseOverPanel) {
@@ -1143,12 +1190,13 @@ var Paint = (function () {
         if (this.interactionState === InteractionMode.RESIZING) { //if we're stopping the resize
             //resize simulator
 
-            var offsetX = 0, offsetY = 0;
+            var offsetX = 0,
+                offsetY = 0;
 
             if (this.resizingSide === ResizingSide.LEFT || this.resizingSide === ResizingSide.TOP_LEFT || this.resizingSide === ResizingSide.BOTTOM_LEFT) {
                 offsetX = (this.paintingRectangle.left - this.newPaintingRectangle.left) * this.resolutionScale;
             }
-            
+
             if (this.resizingSide === ResizingSide.BOTTOM || this.resizingSide === ResizingSide.BOTTOM_LEFT || this.resizingSide === ResizingSide.BOTTOM_RIGHT) {
                 offsetY = (this.paintingRectangle.bottom - this.newPaintingRectangle.bottom) * this.resolutionScale;
             }
@@ -1157,7 +1205,7 @@ var Paint = (function () {
 
             this.simulator.resize(this.getPaintingResolutionWidth(), this.getPaintingResolutionHeight(), offsetX, offsetY, RESIZING_FEATHER_SIZE);
 
-            
+
             this.needsRedraw = true;
         }
 
