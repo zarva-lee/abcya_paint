@@ -1,25 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-        <script src="//cdn.polyfill.io/v2/polyfill.js?features=default,es6,Array.prototype.includes"></script>
-        <!-- <script src="./static/js/polyfill.js"></script> -->
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no"/>
-        <meta name="mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="ABCya! Paint">
-        <link rel="apple-touch-icon" href="./app-icon.png">
-        <link rel="icon" sizes="192x192" href="./app-icon.png">
-        <link rel="shortcut icon" href="./favicon.png">
-        <link rel="manifest" href="./manifest.json">
-        <link rel="stylesheet" href="./sketch/min/sketch-api.min.css">
-        <title>ABCya! Paint</title>
-        <link href="./static/css/main.e42e8f6e.css" rel="stylesheet">
+        <title>小哈佛 Paint</title>
+
+        <meta name="description" content="Fluid paint simulation">
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="paint.css">
     </head>
+
     <body>
-        <div id="root"></div>
-        <!-- <link rel="stylesheet" href="./fonts/asap/declaration.css"> -->
-        <script type="text/javascript" src="./static/js/main.cb367bed.js"></script>
+        <script type="text/template" id="main">
+            <div id="ui">
+                <div id="clear-button" class="button">清除</div><div id="save-button" class="button">保存</div>
+
+                <div class="control-label">画质</div>
+                <div class="buttons" id="qualities"></div>
+                <div style="clear:both"></div>
+
+                <div class="control-label">色彩模式</div>
+                <div class="buttons" id="models"></div>
+                <div style="clear:both"></div>
+
+                <div class="control-label">油漆流动性</div>
+                <div id="fluidity-slider" class="slider"></div>
+
+                <div class="control-label">毛鬃计数</div>
+                <div id="bristles-slider" class="slider"></div>
+
+                <div class="control-label">刷子大小</div>
+                <div id="size-slider" class="slider"></div>
+
+                <div class="control-label">油漆颜色</div>
+
+                <div id="undo-button" class="button">撤销</div><div id="redo-button" class="button">撤销返回</div>
+            </div>
+
+
+            <div id="instructions">
+                <span>单击并按住</span>进行绘制<br/>
+                <span>滚动</span>以更改画笔尺寸<br/>
+                <span>空格+拖动</span>以平移<br/>
+                <span>拖动边</span>以调整画布大小
+            </div>
+        </script>
+
+        <script type="text/template" id="no-support">
+            <div id="no-support-container">
+                <div id="error"></div>
+            </div>
+        </script>
+
+        <div id="placeholder"></div>
+
+
+        <script src="wrappedgl.js"></script>
+        <script src="utilities.js"></script>
+        <script src="rectangle.js"></script>
+        <script src="brush.js"></script>
+        <script src="simulator.js"></script>
+        <script src="colorpicker.js"></script>
+        <script src="slider.js"></script>
+        <script src="buttons.js"></script>
+        <!--<script src="brushviewer.js"></script>-->
+        <script src="paint.js"></script>
+
+        <script>
+            'use strict';
+
+            var canvas = document.createElement('canvas');
+            var wgl = WrappedGL.create(canvas);
+
+            if (wgl !== null && wgl.hasFloatTextureSupport()) { //required features are supported
+                document.body.appendChild(canvas);
+                document.getElementById('placeholder').outerHTML = document.getElementById('main').innerHTML;
+                var painter = new Paint(canvas, wgl);
+            } else { //required features unsupported
+                document.getElementById('placeholder').outerHTML = document.getElementById('no-support').innerHTML;
+
+                if (wgl === null) {
+                    document.getElementById('error').innerHTML = 'Unfortunately, your browser does not support WebGL.';
+                } else {
+                    document.getElementById('error').innerHTML = 'Unfortunately, your browser does not support WebGL floating point textures.';
+                }
+            }
+        </script>
+
     </body>
 </html>
