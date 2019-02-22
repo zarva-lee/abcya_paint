@@ -951,7 +951,6 @@ var Paint = (function () {
     };
     Paint.prototype.save = function () {
         //we first render the painting to a WebGL texture
-        alert(12)
         var wgl = this.wgl;
 
         var saveWidth = this.paintingRectangle.width;
